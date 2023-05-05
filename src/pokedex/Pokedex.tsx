@@ -8,28 +8,28 @@ import { PokemonsDetails } from "../pokemon/types/pokemonDetail";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Box, Button, Card, CardActions, CardContent, Container, Grid } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Container,
+  Grid,
+} from "@mui/material";
+import { Link } from "react-router-dom";
+import PokedexCards from "./components/PokedexCards";
 interface pokedexProps {}
 
 const Pokedex: React.FC<pokedexProps> = () => {
-  const [pokemons, setPokemons] = useState<PokemonListInterface[]>([]);
+  const [pokemons, setPokemons] = useState<PokemonsDetails[]>([]);
   const [selectedPokemon, setSelectedPokemon] = useState<
     PokemonListInterface | undefined
-  >(undefined);
-  const [selectedPokemonDetails, setSelectedPokemonDetails] = useState<
-    PokemonsDetails | undefined
   >(undefined);
 
   useEffect(() => {
     listPokemons().then((response) => setPokemons(response.results));
   }, []);
-
-  useEffect(() => {
-    if (!selectedPokemon) return;
-    getPokemonsDetails(selectedPokemon.name).then((response) =>
-      setSelectedPokemonDetails(response)
-    );
-  }, [selectedPokemon]);
 
   return (
     <div>
@@ -46,23 +46,26 @@ const Pokedex: React.FC<pokedexProps> = () => {
             {pokemons.map((pokemon) => (
               <>
                 <Grid item xs={6} lg={3}>
-                  <Card sx={{ minWidth: 275 }}>
+                  {/* <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                       <Typography>{pokemon.name}</Typography>
                     </CardContent>
                     <CardActions>
-                      <Button onClick={() => setSelectedPokemon(pokemon)} size="small">Abrir</Button>
+                      <Link to={`/pokemon/${pokemon.name}`}>
+                        <Button
+                          onClick={() => setSelectedPokemon(pokemon)}
+                          size="small"
+                        >
+                          Abrir
+                        </Button>
+                      </Link>
                     </CardActions>
-                  </Card>
+                  </Card> */}
+                  <PokedexCards pokemon={pokemon}/>
                 </Grid>
               </>
             ))}
           </Grid>
-          <h2>
-            Pokemon selecionado:{" "}
-            {selectedPokemon?.name || "Nenhum Pokemon foi selecionado"}
-          </h2>
-          {JSON.stringify(selectedPokemonDetails, undefined, 2)}
         </Box>
       </Container>
     </div>
