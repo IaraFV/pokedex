@@ -14,22 +14,16 @@ import {
   Card,
   CardActions,
   CardContent,
+  CircularProgress,
   Container,
   Grid,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import PokedexCards from "./components/PokedexCards";
+import { useQuery } from "react-query";
 interface pokedexProps {}
 
 const Pokedex: React.FC<pokedexProps> = () => {
-  const [pokemons, setPokemons] = useState<PokemonsDetails[]>([]);
-  const [selectedPokemon, setSelectedPokemon] = useState<
-    PokemonListInterface | undefined
-  >(undefined);
-
-  useEffect(() => {
-    listPokemons().then((response) => setPokemons(response.results));
-  }, []);
+  const { data, isLoading } = useQuery(`listPokemons`, listPokemons);
 
   return (
     <div>
@@ -41,32 +35,22 @@ const Pokedex: React.FC<pokedexProps> = () => {
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg">
-        <Box mt={2}>
+      {!isLoading ? (
+          <>
+          <Box mt={2}>
           <Grid container spacing={2}>
-            {pokemons.map((pokemon) => (
+            {data?.results.map((pokemon) => (
               <>
                 <Grid item xs={6} lg={3}>
-                  {/* <Card sx={{ minWidth: 275 }}>
-                    <CardContent>
-                      <Typography>{pokemon.name}</Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Link to={`/pokemon/${pokemon.name}`}>
-                        <Button
-                          onClick={() => setSelectedPokemon(pokemon)}
-                          size="small"
-                        >
-                          Abrir
-                        </Button>
-                      </Link>
-                    </CardActions>
-                  </Card> */}
                   <PokedexCards pokemon={pokemon}/>
                 </Grid>
               </>
             ))}
           </Grid>
         </Box>
+          </>
+          ) : (<div><CircularProgress/></div>)}
+        
       </Container>
     </div>
   );

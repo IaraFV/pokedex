@@ -23,11 +23,6 @@ interface PokedexCardsProps {
   pokemon: PokemonsDetails;
 }
 
-// const Card = styled.section`
-//   padding: 4em;
-//   background: red;
-// `;
-
 export const PokedexCards: React.FC<PokedexCardsProps> = ({ pokemon }) => {
   return (
     <>
