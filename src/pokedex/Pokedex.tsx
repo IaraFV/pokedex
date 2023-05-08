@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   listPokemons,
   PokemonListInterface,
@@ -9,6 +9,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import {
+  Badge,
   Box,
   Button,
   Card,
@@ -17,42 +18,78 @@ import {
   CircularProgress,
   Container,
   Grid,
+  IconButton,
+  LinearProgress,
 } from "@mui/material";
 import PokedexCards from "./components/PokedexCards";
 import { useQuery } from "react-query";
+import { FavoriteOutlined, Search } from "@mui/icons-material";
+import { FavoriteContext } from "../favorites/contexts/FavoriteContext";
+import { styled, alpha } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
 interface pokedexProps {}
 
 const Pokedex: React.FC<pokedexProps> = () => {
-  const { data, isLoading } = useQuery(`listPokemons`, listPokemons);
+  const { favorites } = useContext(FavoriteContext);
+  const { data, isLoading, isRefetching, refetch } = useQuery(
+    `listPokemons`,
+    listPokemons
+  );
 
+  const linkFavorites = () => {
+    window.location.href = "/favoritos";
+  };
+
+  const favoritesCount = favorites.length;
+  
   return (
-    <div>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Pokemon
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Container maxWidth="lg">
-      {!isLoading ? (
-          <>
-          <Box mt={2}>
-          <Grid container spacing={2}>
-            {data?.results.map((pokemon) => (
-              <>
-                <Grid item xs={6} lg={3}>
-                  <PokedexCards pokemon={pokemon}/>
+    <>
+      <div>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Pokemon
+            </Typography>
+            <Box>
+              <IconButton
+                size="large"
+                aria-haspopup="true"
+                color="inherit"
+                onClick={linkFavorites}
+              >
+                <Badge badgeContent={favoritesCount} color="primary">
+                  <FavoriteOutlined />
+                </Badge>
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+        {isRefetching && <LinearProgress color="secondary" />}
+        <Container maxWidth="lg">
+          {!isLoading ? (
+            <>
+              <Box mt={2}>
+                <Button onClick={() => refetch()}>refetch</Button>
+                <Grid container spacing={2}>
+                  {data?.results.map((pokemon) => (
+                    <>
+                      <Grid item xs={6} lg={3}>
+                        <PokedexCards pokemon={pokemon} />
+                      </Grid>
+                    </>
+                  ))}
                 </Grid>
-              </>
-            ))}
-          </Grid>
-        </Box>
-          </>
-          ) : (<div><CircularProgress/></div>)}
-        
-      </Container>
-    </div>
+              </Box>
+            </>
+          ) : (
+            <div>
+              <CircularProgress />
+            </div>
+          )}
+        </Container>
+      </div>
+    </>
   );
 };
 

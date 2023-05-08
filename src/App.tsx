@@ -1,22 +1,30 @@
 import React from "react";
-import Pokedex from "./pokedex/Pokedex";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter, BrowserRouter as Router } from "react-router-dom";
 import Routes from "./routes";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { FavoriteProvider } from './favorites/contexts/FavoriteContext';
 
-const queryClient = new QueryClient();
-const App: React.FC = () => {
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    }
+  }
+});
+
+export const App: React.FC = () => {
   return (
-    <>
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <Routes />
-        </Router>
-        <ReactQueryDevtools initialIsOpen={false}/>
-      </QueryClientProvider>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <FavoriteProvider>
+          <BrowserRouter>
+            <Routes />
+          </BrowserRouter>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </FavoriteProvider>
+    </QueryClientProvider>
   );
 };
 
-export default App;
+export default App; 
