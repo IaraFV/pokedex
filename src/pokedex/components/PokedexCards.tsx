@@ -19,47 +19,71 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PokemonsDetails } from "../../pokemon/types/pokemonDetail";
 import { Chip } from "@mui/material";
 import { FavoriteContext } from "../../favorites/contexts/FavoriteContext";
+import "./style/PokedexCard.css";
+import { Types } from "./style/typesColors/Colors";
 
 interface PokedexCardsProps {
   pokemon: PokemonsDetails;
 }
 
 export const PokedexCards: React.FC<PokedexCardsProps> = ({ pokemon }) => {
-  
   const { setFavorites, favorites } = useContext(FavoriteContext);
 
   const addPokemonToFavorite = () => {
     setFavorites([...favorites, pokemon]);
-  }
+  };
 
   const removePokemonFromFavorites = () => {
     setFavorites(favorites.filter((poke) => poke.name !== pokemon.name));
-  }
+  };
 
   const isFavorite = favorites.some((poke) => poke.name === pokemon.name);
 
+  const getTypeColor = (type: string): string => {
+    return Types[type] || "#D67136";
+  };
+
   return (
-    <Card>
+    <div className="bodyCard">
       <Link to={`/pokemon/${pokemon.name}`}>
-      <CardMedia
-        component="img"
-        alt={pokemon.name}
-        height="140"
-        image={pokemon.sprites.front_default}
-        title={pokemon.name}
-      />
+        <div className="container">
+          <CardMedia
+            component="img"
+            alt={pokemon.name}
+            height="250"
+            width="100%"
+            image={pokemon.sprites.front_default}
+            title={pokemon.name}
+            className="moving-image"
+          />
+        </div>
       </Link>
 
       <CardHeader
         title={pokemon.name}
-        subheader={pokemon.types.map((type) => type.type.name).join(', ')}
+        subheader={pokemon.types.map((type) => (
+          <Chip
+            sx={{
+              color: getTypeColor(type.type.name),
+              borderColor: getTypeColor(type.type.name),
+            }}
+            label={type.type.name}
+            variant="outlined"
+          />
+        ))}
       />
+
       <CardActions disableSpacing>
-        <IconButton onClick={() => isFavorite ? removePokemonFromFavorites() : addPokemonToFavorite()} aria-label="add to favorites">
+        <IconButton
+          onClick={() =>
+            isFavorite ? removePokemonFromFavorites() : addPokemonToFavorite()
+          }
+          aria-label="add to favorites"
+        >
           <Favorite color={isFavorite ? `error` : `disabled`} />
         </IconButton>
       </CardActions>
-    </Card>
+    </div>
   );
 };
 

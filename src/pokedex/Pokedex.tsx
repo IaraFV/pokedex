@@ -28,6 +28,7 @@ import { FavoriteContext } from "../favorites/contexts/FavoriteContext";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import imgLogo from './assets/Title.png';
 interface pokedexProps {}
 
 const Pokedex: React.FC<pokedexProps> = () => {
@@ -46,11 +47,9 @@ const Pokedex: React.FC<pokedexProps> = () => {
   return (
     <>
       <div>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Pokemon
-            </Typography>
+        <AppBar position="static" sx={{ backgroundColor: "transparent" }}>
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', width: '100' }}>
+            <img src={imgLogo} alt="50" />
             <Box>
               <IconButton
                 size="large"
